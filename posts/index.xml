@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Bruno Kim</title>
-    <link>https://brunokim.xyz/posts/</link>
+    <link>https://brunokim.github.io/posts/</link>
     <description>Recent content in Posts on Bruno Kim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>pt-BR</language>
-    <lastBuildDate>Mon, 04 Jan 2021 15:35:44 -0300</lastBuildDate><atom:link href="https://brunokim.xyz/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Jan 2021 15:35:44 -0300</lastBuildDate><atom:link href="https://brunokim.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Sobre</title>
-      <link>https://brunokim.xyz/posts/sobre/</link>
+      <link>https://brunokim.github.io/posts/sobre/</link>
       <pubDate>Mon, 04 Jan 2021 15:35:44 -0300</pubDate>
       
-      <guid>https://brunokim.xyz/posts/sobre/</guid>
+      <guid>https://brunokim.github.io/posts/sobre/</guid>
       <description>Sobre mim Eu me chamo Bruno Kim, e não, não sou descendente de coreanos ou japoneses. No meu caso, &amp;ldquo;Kim&amp;rdquo; é um segundo nome, tal qual &amp;ldquo;Pedro Augusto&amp;rdquo; ou &amp;ldquo;Ana Clara&amp;rdquo;.
 O meu segundo nome é homenagem ao livro &amp;ldquo;Kim&amp;rdquo;, de Rudyard Kipling. Kipling foi um autor britânico-indiano do começo do século XX, e seu livro mais conhecido é &amp;ldquo;O Livro da Selva&amp;rdquo;, com o menino-lobo Mowgli. &amp;ldquo;Kim&amp;rdquo; acompanha as aventuras do menino Kimball, um jovem de ascendência britânica que cresceu nas ruas de Lahore (hoje no Paquistão) e ora viaja a Índia como o chela de um monge tibetano, ora atua como espião em uma guerra fria entre russos e ingleses.</description>
     </item>
