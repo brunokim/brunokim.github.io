@@ -3,26 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://brunokim.github.io/</loc>
+    <loc>https://www.quarenta-e-dois.ml/</loc>
+    <lastmod>2021-01-04T16:37:20-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.quarenta-e-dois.ml/posts/</loc>
+    <lastmod>2021-01-04T16:37:20-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.quarenta-e-dois.ml/posts/prol/</loc>
+    <lastmod>2021-01-04T16:37:20-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.quarenta-e-dois.ml/posts/sobre/</loc>
     <lastmod>2021-01-04T15:35:44-03:00</lastmod>
   </url>
   
   <url>
-    <loc>https://brunokim.github.io/posts/</loc>
-    <lastmod>2021-01-04T15:35:44-03:00</lastmod>
+    <loc>https://www.quarenta-e-dois.ml/categories/</loc>
   </url>
   
   <url>
-    <loc>https://brunokim.github.io/posts/sobre/</loc>
-    <lastmod>2021-01-04T15:35:44-03:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://brunokim.github.io/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>https://brunokim.github.io/tags/</loc>
+    <loc>https://www.quarenta-e-dois.ml/tags/</loc>
   </url>
   
 </urlset>

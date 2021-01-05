@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Bruno Kim</title>
-    <link>https://brunokim.github.io/categories/</link>
-    <description>Recent content in Categories on Bruno Kim</description>
+    <title>Categories on 42 ml</title>
+    <link>https://www.quarenta-e-dois.ml/categories/</link>
+    <description>Recent content in Categories on 42 ml</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>pt-BR</language><atom:link href="https://brunokim.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>pt-BR</language><atom:link href="https://www.quarenta-e-dois.ml/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
