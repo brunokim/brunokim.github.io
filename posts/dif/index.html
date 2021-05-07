@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Negação e dif/2 em Prolog | 42 ml</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Uma das dificuldades ao programar em Prolog é lidar com negação. Os fatos de um banco de dados definem um certo espaço onde essas coisas são verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos. Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para então retirar dele os fatos conhecidos!
+Por exemplo, vamos listar alguns membros da família real britânica, anotando quem são seus pais com a relação parent(PaiOuMãe, FilhoOuFilha):">
+    <meta name="generator" content="Hugo 0.83.1" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.4fc0b62e4b82c997bb0041217cd6b979.css" rel="stylesheet">
+    
+
+    
+      <link rel="stylesheet" href="/css/style.css">
+    
+
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Negação e dif/2 em Prolog" />
+<meta property="og:description" content="Uma das dificuldades ao programar em Prolog é lidar com negação. Os fatos de um banco de dados definem um certo espaço onde essas coisas são verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos. Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para então retirar dele os fatos conhecidos!
+Por exemplo, vamos listar alguns membros da família real britânica, anotando quem são seus pais com a relação parent(PaiOuMãe, FilhoOuFilha):" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.quarenta-e-dois.ml/posts/dif/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-06T17:07:29-03:00" />
+<meta property="article:modified_time" content="2021-05-06T17:07:29-03:00" />
+
+<meta itemprop="name" content="Negação e dif/2 em Prolog">
+<meta itemprop="description" content="Uma das dificuldades ao programar em Prolog é lidar com negação. Os fatos de um banco de dados definem um certo espaço onde essas coisas são verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos. Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para então retirar dele os fatos conhecidos!
+Por exemplo, vamos listar alguns membros da família real britânica, anotando quem são seus pais com a relação parent(PaiOuMãe, FilhoOuFilha):"><meta itemprop="datePublished" content="2021-05-06T17:07:29-03:00" />
+<meta itemprop="dateModified" content="2021-05-06T17:07:29-03:00" />
+<meta itemprop="wordCount" content="2266">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Negação e dif/2 em Prolog"/>
+<meta name="twitter:description" content="Uma das dificuldades ao programar em Prolog é lidar com negação. Os fatos de um banco de dados definem um certo espaço onde essas coisas são verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos. Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para então retirar dele os fatos conhecidos!
+Por exemplo, vamos listar alguns membros da família real britânica, anotando quem são seus pais com a relação parent(PaiOuMãe, FilhoOuFilha):"/>
+
+	
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-light-purple">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        42 ml
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+
+<a href="https://twitter.com/brunokim_mc" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+<a href="https://www.linkedin.com/in/brunokimmc/" target="_blank" class="link-transition linkedin link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" rel="noopener" aria-label="follow on LinkedIn——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+<a href="https://github.com/brunokim" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+  <div id="sharing" class="mt3">
+
+    
+    <a href="https://www.facebook.com/sharer.php?u=https://www.quarenta-e-dois.ml/posts/dif/" class="facebook no-underline" aria-label="share on Facebook">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+
+    </a>
+
+    
+    
+    <a href="https://twitter.com/share?url=https://www.quarenta-e-dois.ml/posts/dif/&amp;text=Nega%c3%a7%c3%a3o%20e%20dif/2%20em%20Prolog" class="twitter no-underline" aria-label="share on Twitter">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+    </a>
+
+    
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.quarenta-e-dois.ml/posts/dif/&amp;title=Nega%c3%a7%c3%a3o%20e%20dif/2%20em%20Prolog" class="linkedin no-underline" aria-label="share on LinkedIn">
+      <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+    </a>
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Negação e dif/2 em Prolog</h1>
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-05-06T17:07:29-03:00">May 6, 2021</time>
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Uma das dificuldades ao programar em Prolog é lidar com <strong>negação</strong>.
+Os fatos de um banco de dados definem um certo espaço onde essas coisas são
+verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos.
+Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para
+então retirar dele os fatos conhecidos!</p>
+<p>Por exemplo, vamos listar alguns membros da família real britânica, anotando
+quem são seus pais com a relação <code>parent(PaiOuMãe, FilhoOuFilha)</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">george</span>, <span style="color:#e6db74">elizabeth</span>).
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">george</span>, <span style="color:#e6db74">margaret</span>).
+
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">elizabeth</span>, <span style="color:#e6db74">charles</span>).
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">philip</span>, <span style="color:#e6db74">charles</span>).
+
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">charles</span>, <span style="color:#e6db74">william</span>).
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">diana</span>, <span style="color:#e6db74">william</span>).
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">charles</span>, <span style="color:#e6db74">harry</span>).
+<span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">diana</span>, <span style="color:#e6db74">harry</span>).
+</code></pre></div><p>Eu fiz essa lista de cabeça, com conhecimentos adquiridos pela
+série &ldquo;The Crown&rdquo;. Não está listada, por exemplo, a mãe da Rainha Elizabeth.</p>
+<p>Podemos agora ampliar nosso universo de conhecimento descrevendo uma relação
+derivada a partir de <code>parent/2</code>. Por exemplo, vamos descrever um avô/avó como
+o genitor de genitor de alguém.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">grandparent</span>(Gran, Child) :-
+    <span style="color:#a6e22e">parent</span>(Gran, Parent),
+    <span style="color:#a6e22e">parent</span>(Parent, Child).
+</code></pre></div><p>Escrever esta regra expande o espaço contendo todas as verdades conhecidas.
+Podemos perguntar agora quais são todos os avôs e avós, como se
+tivéssemos escrito cada uma dessas relações por extenso.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">grandparent</span>(X, Y).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">george</span>, Y <span style="color:#f92672">=</span> <span style="color:#e6db74">charles</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">elizabeth</span>, Y <span style="color:#f92672">=</span> <span style="color:#e6db74">william</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">elizabeth</span>, Y <span style="color:#f92672">=</span> <span style="color:#e6db74">harry</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">philip</span>, Y <span style="color:#f92672">=</span> <span style="color:#e6db74">william</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">philip</span>, Y <span style="color:#f92672">=</span> <span style="color:#e6db74">harry</span> ;
+<span style="color:#e6db74">false</span>.
+</code></pre></div><p>Legal! Podemos também definir uma nova relação para descobrir quem é irmão de
+quem com <code>sibling/2</code>, onde se define que irmãos são duas pessoas que possuem
+pelo menos um genitor em comum.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">sibling</span>(Child1, Child2) :-
+    <span style="color:#a6e22e">parent</span>(Parent, Child1),
+    <span style="color:#a6e22e">parent</span>(Parent, Child2).
+</code></pre></div><p>Agora podemos consultar pela irmã da Princesa Margaret, por ex-</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(<span style="color:#e6db74">margaret</span>, X).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">elizabeth</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">margaret</span>.
+</code></pre></div><p>Hmm, nossa definição de &ldquo;irmão&rdquo; está um pouco falha. Uma pessoa possui um pai em
+comum consigo mesma, então ela sempre vai aparecer na consulta. Podemos reescrever
+a cláusula para filtrar este caso:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">sibling</span>(Child1, Child2) :-
+    Child1 <span style="color:#e6db74">\=</span> Child2,
+    <span style="color:#a6e22e">parent</span>(Parent, Child1),
+    <span style="color:#a6e22e">parent</span>(Parent, Child2).
+</code></pre></div><p>Agora podemos consultar novamente pela irmã da Princesa Margaret-</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(<span style="color:#e6db74">margaret</span>, X).
+<span style="color:#e6db74">false</span>.
+
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(<span style="color:#e6db74">margaret</span>, <span style="color:#e6db74">elizabeth</span>).
+<span style="color:#e6db74">true</span>.
+</code></pre></div><p>Essa não! Nós conseguimos consultar se &ldquo;Elizabeth é irmã de Margaret?&rdquo;, mas não
+conseguimos consultar &ldquo;para quais X, X é irmã de Margaret?&rdquo;. Isso torna nosso
+programa mais limitado, e a <a href="https://www.swi-prolog.org/pldoc/doc_for?object=(%5C%3D)/2">documentação de <code>\=</code></a>
+nos explica porquê:</p>
+<blockquote>
+<p><code>@Term1 \= @Term2</code></p>
+<p>Equivalente a <code>\+ Term1 = Term2</code></p>
+<p>Este predicado é logicamente <em>correto</em> se seus argumentos forem suficientemente
+instanciados. Em outros casos, como <code>?- X \= Y.</code>, o predicado falha mesmo existindo
+soluções. Isto se dá devido à natureza incompleta de <code>\+/1</code>.</p>
+</blockquote>
+<p>Precisamos então reordenar os <em>goals</em> na cláusula, para garantir que <code>\=</code> seja usado
+com essas variáveis já instanciadas.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">sibling</span>(Child1, Child2) :-
+    <span style="color:#a6e22e">parent</span>(Parent, Child1),
+    <span style="color:#a6e22e">parent</span>(Parent, Child2),
+    Child1 <span style="color:#e6db74">\=</span> Child2.
+</code></pre></div><p>Agora, podemos realizar a consulta em diferentes níveis de instanciação:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(X, <span style="color:#e6db74">margaret</span>).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">elizabeth</span> ;
+<span style="color:#e6db74">false</span>.
+
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(<span style="color:#e6db74">harry</span>, X).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">william</span> ;
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">william</span> ;
+<span style="color:#e6db74">false</span>.
+</code></pre></div><p>Puxa, essa duplicação deixa nosso resultado muito feio. Isso acontece porque
+Harry é irmão de William por dois &ldquo;caminhos&rdquo;, com <code>Parent=charles</code> e <code>Parent=diana</code>.
+Seria interessante tentar retornar apenas uma vez. Podemos fazer um filtro posterior
+com <a href="https://www.swi-prolog.org/pldoc/man?section=allsolutions#setof/3"><code>setof/3</code></a>,
+mas vamos explorar como garantir que emitimos se são irmãos apenas uma vez.</p>
+<p>Para começar, precisamos considerar as possíveis combinações: <code>Child1</code> e
+<code>Child2</code> podem ter 1 ou 2 genitores. Se algum deles tiver apenas 1 genitor, então
+esse é o único caminho para serem irmãos. Se ambos possuírem 2 genitores, então
+devemos ser bem sucedidos apenas com um deles &ndash; digamos, o menor na <a href="https://www.swi-prolog.org/pldoc/man?section=standardorder">ordem padrão
+dos termos</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">sibling</span>(Child1, Child2) :-
+    <span style="color:#75715e">% Child1 e Child2 compartilham um genitor Parent1.</span>
+    <span style="color:#a6e22e">parent</span>(Parent1, Child1),
+    <span style="color:#a6e22e">parent</span>(Parent1, Child2),
+    Child1 <span style="color:#e6db74">\=</span> Child2,
+
+    <span style="color:#75715e">% Se Child1 e Child2 compartilharem um segundo genitor</span>
+    <span style="color:#75715e">% Parent2 diferente de Parent1, suceda se tiver escolhido</span>
+    <span style="color:#75715e">% primeiro o menor dos dois.</span>
+    <span style="color:#75715e">% Caso essa condição falhe, suceda pois eles são irmãos</span>
+    <span style="color:#75715e">% apenas via Parent1.</span>
+    ( <span style="color:#a6e22e">parent</span>(Parent2, Child1),
+      Parent2 <span style="color:#e6db74">\=</span> Parent1,
+      <span style="color:#a6e22e">parent</span>(Parent2, Child2) <span style="color:#e6db74">-&gt;</span>
+      Parent1 <span style="color:#e6db74">@&lt;</span> Parent2
+    ; <span style="color:#e6db74">true</span>
+    ).
+</code></pre></div><p>Agora, temos um resultado limpinho para qualquer consulta, às custas de um
+código mais complicado:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(X, <span style="color:#e6db74">margaret</span>).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">elizabeth</span> ;
+<span style="color:#e6db74">false</span>.
+
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">sibling</span>(<span style="color:#e6db74">harry</span>, X).
+X <span style="color:#f92672">=</span> <span style="color:#e6db74">william</span> ;
+<span style="color:#e6db74">false</span>.
+</code></pre></div><h2 id="usando-dif">Usando <code>dif</code></h2>
+<p>Eu fui desonesto ao explicar esse caso para você, pois omiti que a própria documentação de
+<code>\=/2</code> já contém uma dica de como fazer melhor:</p>
+<blockquote>
+<p>Para fazer com que seu programa funcione corretamente quando os argumentos não
+estiverem suficientemente instanciados, use <code>dif/2</code>.</p>
+</blockquote>
+<p>Historicamente, <code>dif/2</code> já estava presente desde o primeiro Prolog, e consiste em uma
+função que verifica se dois termos são diferentes e impede <em>no futuro</em> que alguma instanciação
+faça com que eles sejam iguais. Acompanhe os seguintes exemplos:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#75715e">% X não está instanciado, e o resultado é apenas a</span>
+<span style="color:#75715e">% restrição X ≠ 2</span>
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">2</span>).
+<span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">2</span>).
+
+<span style="color:#75715e">% X pode ser instanciado com 1.</span>
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">2</span>), X <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span>
+X <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span>
+
+<span style="color:#75715e">% Tentar instanciar X com 2 falha.</span>
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">2</span>), X <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.</span>
+<span style="color:#e6db74">false</span>.
+
+<span style="color:#75715e">% Tentar instanciar X com 2 falha, mesmo se estiver</span>
+<span style="color:#75715e">% dentro de um termo composto.</span>
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(<span style="color:#a6e22e">f</span>(X), <span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">2</span>)), X <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.</span>
+<span style="color:#e6db74">false</span>.
+
+<span style="color:#75715e">% Neste caso, X ≠ Y, e X é instanciado com 2.</span>
+<span style="color:#75715e">% Y não é instanciado, e o resultado inclui a</span>
+<span style="color:#75715e">% restrição Y ≠ 2.</span>
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(<span style="color:#a6e22e">f</span>(X), <span style="color:#a6e22e">f</span>(Y)), X <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.</span>
+X <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>,
+<span style="color:#a6e22e">dif</span>(Y, <span style="color:#ae81ff">2</span>).
+</code></pre></div><p>Esse recurso permite tratar a negação diretamente, como uma propriedade
+a ser satisfeita. Mesmo que não possamos enumerar todo o universo e
+retirar apenas os valores negados, podemos ainda raciocinar sobre
+as propriedades do espaço da solução. No último exemplo acima, sabemos
+que <code>Y ≠ 2</code> é uma condição suficiente para a solução ser verdadeira.
+Se quiséssemos obter todas as soluções, teríamos que enumerar via
+<em>backtracking</em> todos os inteiros que satisfazem isso!</p>
+<p>Usando <code>dif/2</code>, nosso código fica bem mais simples, e não precisamos nos
+preocupar com a ordem dos termos na cláusula.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#a6e22e">sibling</span>(Child1, Child2) :-
+    <span style="color:#75715e">% Child1 e Child2 são diferentes e</span>
+    <span style="color:#75715e">% compartilham um genitor</span>
+    <span style="color:#a6e22e">dif</span>(Child1, Child2),
+    <span style="color:#a6e22e">parent</span>(Parent1, Child1),
+    <span style="color:#a6e22e">parent</span>(Parent1, Child2),
+
+    <span style="color:#75715e">% Se ambas compartilham um genitor diferente</span>
+    <span style="color:#75715e">% de Parent1, falhe se não tiver escolhido</span>
+    <span style="color:#75715e">% primeiro o menor deles.</span>
+    <span style="color:#a6e22e">dif</span>(Parent1, Parent2),
+    ( <span style="color:#a6e22e">parent</span>(Parent2, Child1),
+      <span style="color:#a6e22e">parent</span>(Parent2, Child2) <span style="color:#e6db74">-&gt;</span>
+      Parent1 <span style="color:#e6db74">@&lt;</span> Parent2
+    ; <span style="color:#e6db74">true</span>
+    ).
+</code></pre></div><h2 id="como-dif2-funciona">Como <code>dif/2</code> funciona?</h2>
+<p>Em SWI-Prolog, <code>dif/2</code> é implementado utilizando <strong>variáveis com atributos</strong>
+(que daqui em diante vou chamar só de <em>attrvars</em>). Attrvars são variáveis
+desvinculadas (<em>unbound</em>) associadas a atributos, que por sua vez são termos
+lógicos usuais com um <em>twist</em>: durante a unificação dessa variável, uma
+função associada ao atributo é invocada, que pode fazer a unificação falhar
+ou até modificar o valor que está sendo vinculado.</p>
+<p>O objetivo de attrvars é, em suma, permitir estender o mecanismo de
+unificação. É uma funcionalidade de baixo nível, muito difícil de utilizar
+corretamente, mas também muito poderosa para a solução de sistemas de
+restrições, segundo <a href="https://www.metalevel.at/prolog/attributedvariables">Marcus Triska</a>.
+Attrvars são utilizadas para implementar não só <code>dif/2</code> em SWI-Prolog como
+também <a href="https://www.swi-prolog.org/pldoc/man?section=coroutining#freeze/2"><code>freeze/2</code></a>,
+que permite atrasar uma execução até que uma variável seja vinculada; e todas
+as bibliotecas de programação de restrições lógicas (CLP, de <em>Constraint
+Logic Programming</em>).</p>
+<p>Como estou implementando <a href="https://github.com/brunokim/logic-engine">minha própria engine lógica</a>,
+resolvi implementar attrvars e então tentar implementar <code>dif/2</code>. Este post
+é basicamente um estudo (prolixo) da implementação de SWI-Prolog.</p>
+<p>Em SWI-Prolog, um atributo está sempre associado a um módulo. Quando uma
+variável contendo um atributo é vinculada, a função <code>attr_unify_hook(+Atributo, +Valor)</code>
+do módulo é invocada com o atributo e o valor vinculado. No caso de <code>dif/2</code>, o
+módulo se chama <code>dif</code>; com isso vamos investigar o que acontece com diferentes
+chamadas à função utilizando a primitiva <code>get_attr(+Var, +Módulo, +Valor)</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">get_attr</span>(X, <span style="color:#e6db74">dif</span>, Attr).
+Attr <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([<span style="color:#66d9ef">_</span><span style="color:#ae81ff">5678</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], []),
+<span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">1</span>).
+</code></pre></div><p>A primeira resposta é o que estamos interessados, e a segunda é apenas a
+repetição dos termos residuais, ou restrições não satisfeitas. Daqui em diante
+vou omitir estes termos.</p>
+<p>Diferentes chamadas a <code>dif/2</code> geram termos adicionais no atributo de X: pares
+de variáveis desvinculadas com o valor de diferença.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">10</span>), <span style="color:#a6e22e">get_attr</span>(X, <span style="color:#e6db74">dif</span>, Attr).
+Attr <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([<span style="color:#66d9ef">_</span><span style="color:#ae81ff">7034</span><span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#66d9ef">_</span><span style="color:#ae81ff">7046</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#66d9ef">_</span><span style="color:#ae81ff">7058</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], []), ...
+</code></pre></div><p>Estudando o <a href="https://github.com/SWI-Prolog/swipl-devel/blob/V8.3.22/library/dif.pl">código do módulo <code>dif</code></a>
+vemos que uma chamada a <code>dif/2</code> invoca <a href="https://www.swi-prolog.org/pldoc/man?section=compare#unifiable/3"><code>unifiable/3</code></a>,
+um predicado nativo que testa se dois termos são unificáveis, e quais
+substituições de variáveis satisfazem essa equivalência. De certa maneira, ela concretiza
+a unificação ao mostrar como ela <em>seria</em> feita, ao invés de fazê-la diretamente.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">unifiable</span>(<span style="color:#a6e22e">f</span>(A, <span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">1</span>, B), Unifier).
+Unifier<span style="color:#f92672">=</span>[B<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, A<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>].
+
+<span style="color:#e6db74">?-</span> <span style="color:#a6e22e">f</span>(A, <span style="color:#ae81ff">2</span>) <span style="color:#f92672">=</span> <span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">1</span>, B).
+A<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, B<span style="color:#f92672">=</span><span style="color:#ae81ff">2.</span>
+</code></pre></div><p>Ao ser invocado, <code>dif/2</code> testa a unificação de seus dois termos, e lista as
+substituições que os tornariam equivalentes. Se alguma das variáveis for
+vinculada com um desses valores, a unificação falha.</p>
+<p>O resultado de <code>unifiable/3</code> não é armazenado diretamente como atributo da
+variável, mas sim como um atributo de uma variável <code>OrNode</code>, que essa sim
+é referenciada pelo atributo da variável.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">get_attr</span>(X, <span style="color:#e6db74">dif</span>, <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], [])), <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr).
+AttrOr <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">1</span>, [X<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>]), ...
+</code></pre></div><p>Qual é a função desta indireção? O modelo é similar ao de um grafo, onde cada
+variável seria um vértice e o <code>OrNode</code> seria a aresta que os conecta. Todos os
+vértices participantes de uma mesma chamada ao <code>dif/2</code> apontam para a mesma
+estrutura.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(<span style="color:#a6e22e">f</span>(A,<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">1</span>,B)),
+   <span style="color:#a6e22e">get_attr</span>(A, <span style="color:#e6db74">dif</span>, AttrA),
+   <span style="color:#a6e22e">get_attr</span>(B, <span style="color:#e6db74">dif</span>, AttrB),
+   AttrA <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], []),
+   <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr).
+AttrA <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], []), <span style="color:#75715e">% AttrA e AttrB apontam</span>
+AttrB <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>], []), <span style="color:#75715e">% para Or</span>
+AttrOr <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">2</span>, [B<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, A<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>]), ...
+</code></pre></div><p>Os exemplos anteriores mostram que essas arestas são armazenadas no primeiro
+termo de <code>vardif(V1, V2)</code>. Para que serve o segundo termo, então? A resposta
+aparece quando criamos uma relação de diferença entre duas variáveis X e Y:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, Y),
+   <span style="color:#a6e22e">get_attr</span>(X, <span style="color:#e6db74">dif</span>, AttrX),
+   <span style="color:#a6e22e">get_attr</span>(Y, <span style="color:#e6db74">dif</span>, AttrY),
+   AttrX <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span>Y], []),
+   <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr).
+AttrX <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span>Y], []), <span style="color:#75715e">% Or-Y no 1º termo</span>
+AttrY <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([], [Or<span style="color:#f92672">-</span>X]), <span style="color:#75715e">% Or-X no 2º termo</span>
+AttrOr <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">1</span>, [X<span style="color:#f92672">=</span>Y]), ...
+</code></pre></div><p>Assim, vemos que as arestas possuem uma direção, dependendo se a variável
+aparece do lado esquerdo ou direito de uma substituição. As arestas incidentes
+(isso é, de entrada) ficam em <code>V2</code>, e as arestas adjacentes (de saída) ficam
+em <code>V1</code>.</p>
+<p>Aquilo que chamamos de &ldquo;aresta&rdquo; é uma variável que contém um atributo <code>node(N, Pairs)</code>.
+O objetivo de usar uma attrvar ao invés de simplesmente associar um termo é
+utilizar-se da estrutura de forma <strong>mutável</strong>. Uma vez que uma variável
+referenciada pela aresta é vinculada, a estrutura é atualizada para 1) indicar que
+restrições foram satisfeitas; ou 2) remover um par agora equivalente da base,
+potencialmente falhando a unificação.</p>
+<p>(Note que esta &ldquo;mutabilidade&rdquo; é diferente em Prolog: uma &ldquo;alteração&rdquo; de atributo
+registra o valor anterior, e é desfeita no <em>backtrack</em>.)</p>
+<p>Vamos ver o que acontece quando vinculamos uma das variáveis acima.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(X, Y),
+   <span style="color:#a6e22e">get_attr</span>(X, <span style="color:#e6db74">dif</span>, AttrX),
+   AttrX <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span>Y], []),
+   Y <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+   <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr).
+AttrX <span style="color:#f92672">=</span> <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], []),   <span style="color:#75715e">% Era Or-Y</span>
+AttrOr <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">1</span>, [X<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>]), ...  <span style="color:#75715e">% Era X=Y</span>
+</code></pre></div><p>As referências a Y foram substituídas, mas o número que é o 1º argumento de
+<code>node</code> representa? Aparentemente, ele começa como uma contagem de todos os pares
+da aresta, e é decrementado quando um dos pares torna-se verdadeiro.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-prolog" data-lang="prolog"><span style="color:#e6db74">?-</span> <span style="color:#a6e22e">dif</span>(<span style="color:#a6e22e">f</span>(A, <span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">1</span>, B)),
+   <span style="color:#a6e22e">get_attr</span>(A, <span style="color:#e6db74">dif</span>, <span style="color:#a6e22e">vardif</span>([Or<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], [])),
+   <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr1),
+   <span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;AttrOr1: ~w~n&#34;</span>, AttrOr1),
+   B <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>,
+   <span style="color:#a6e22e">get_attr</span>(Or, <span style="color:#e6db74">dif</span>, AttrOr2),
+   <span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;AttrOr2: ~w~n&#34;</span>, AttrOr2).
+AttrOr1<span style="color:#e6db74">:</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">2</span>,[<span style="color:#66d9ef">_</span><span style="color:#ae81ff">1824</span><span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,<span style="color:#66d9ef">_</span><span style="color:#ae81ff">1868</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>])
+AttrOr2<span style="color:#e6db74">:</span> <span style="color:#a6e22e">node</span>(<span style="color:#ae81ff">1</span>,[<span style="color:#ae81ff">2</span><span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,<span style="color:#66d9ef">_</span><span style="color:#ae81ff">1868</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>])
+...
+</code></pre></div><p>No exemplo acima foi necessário utilizar <code>format/2</code> para escrever imediatamente
+o estado do termo naquele ponto, pois dado que o atributo é mutável, tanto <code>AttrOr1</code>
+quanto <code>AttrOr2</code> apontam para o mesmo endereço.</p>
+<p>De início eu fiquei confuso com este resultado. Se <code>f(A,2) ≠ f(1,B)</code>, isto não
+implica que <code>A ≠ 1</code> e <code>B ≠ 2</code>? A resposta é <em>quase isso</em>: a implicação é que
+<code>A ≠ 1</code> <strong>ou</strong> <code>B ≠ 2</code>. A relação ainda é satisfeita com {A=1, B=20}, ou {A=10, B=2}.
+O que não satisfaz é ter ao mesmo tempo {A=1, B=2}. Entendeu agora porque eles
+se chamam OrNodes?</p>
+<p>O uso do contador é uma otimização; poderíamos simplesmente manter a lista de
+restrições e remover os elementos que se mostram iguais. Contudo, isso exigiria
+buscar o elemento modificado na lista, e então remover esse nó do meio. Uma opção
+mais simples é notar que não precisamos saber <em>qual</em> elemento da aresta foi modificado,
+apenas que um deles foi vinculado a um valor &ldquo;proibido&rdquo;. Se o número de elementos
+diferentes cair a zero, então a unificação toda falha.</p>
+<p>Se é assim, então qual a necessidade de se manter toda a lista? Ela ainda é útil
+para imprimir quais são as restrições ainda ativas na variável desvinculada. É assim que
+são obtidos os termos residuais, aqueles impressos ao final de uma consulta, se
+uma variável atribuída ainda está desvinculada.</p>
+<h2 id="resumo">Resumo</h2>
+<p>Quando se chama <code>dif(A, B)</code>&hellip;</p>
+<ol>
+<li><code>dif(A, B)</code> invoca <code>unifiable(A, B, Pairs)</code>, onde <code>Pairs</code> é uma lista de termos
+da forma <code>X=Y</code>, representando as substituições que unificam A e B;</li>
+<li>Cria uma variável <code>Or</code> com atributo <code>node(N, Pairs)</code>, onde N é o comprimento de Pairs;</li>
+<li>Para as variáveis do lado esquerdo da substituição <code>X=Y</code> , adiciona a aresta <code>Or-Y</code> à
+lista de arestas adjacentes no atributo <code>vardif(Adj, Inc)</code>;</li>
+<li>Para as variáveis do lado direito da substituição <code>X=Y</code>, adiciona a aresta <code>Or-X</code> à
+lista de arestas incidentes no atributo <code>vardif(Adj, Inc)</code>.</li>
+</ol>
+<p>Quando se tenta unificar <code>X=V</code>&hellip;</p>
+<ol>
+<li>Se <code>X</code> tem um atributo <code>vardif(Adj, Inc)</code>, então&hellip;</li>
+<li>Se <code>V</code> é uma variável, mescla todas as restrições em ambas e atribui a <code>V</code>;</li>
+<li>Se <code>V</code> não é uma variável, para cada aresta <code>Or-Y</code> em Adj e Inc&hellip;</li>
+<li>Se <code>Y \== V</code>, adiciona em Or as restrições para garantir que <code>Y ≠ V</code>;</li>
+<li>Se <code>Y == V</code>, decrementa o contador do atributo <code>node(Cnt, Pairs)</code> de Or. Se o contador
+chegar a zero, a unificação falha.</li>
+</ol>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-light-purple bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://www.quarenta-e-dois.ml/" >
+    &copy;  42 ml 2021 
+  </a>
+    <div>
+
+
+
+
+<a href="https://twitter.com/brunokim_mc" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+<a href="https://www.linkedin.com/in/brunokimmc/" target="_blank" class="link-transition linkedin link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" rel="noopener" aria-label="follow on LinkedIn——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+<a href="https://github.com/brunokim" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

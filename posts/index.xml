@@ -6,7 +6,17 @@
     <description>Recent content in Posts on 42 ml</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>pt-BR</language>
-    <lastBuildDate>Mon, 04 Jan 2021 16:37:20 -0300</lastBuildDate><atom:link href="https://www.quarenta-e-dois.ml/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 06 May 2021 17:07:29 -0300</lastBuildDate><atom:link href="https://www.quarenta-e-dois.ml/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Negação e dif/2 em Prolog</title>
+      <link>https://www.quarenta-e-dois.ml/posts/dif/</link>
+      <pubDate>Thu, 06 May 2021 17:07:29 -0300</pubDate>
+      
+      <guid>https://www.quarenta-e-dois.ml/posts/dif/</guid>
+      <description>Uma das dificuldades ao programar em Prolog é lidar com negação. Os fatos de um banco de dados definem um certo espaço onde essas coisas são verdade. As cláusulas ampliam esse espaço, extrapolando a partir dos fatos. Provar uma negativa, do outro lado, exigiria saber o universo inteiro, para então retirar dele os fatos conhecidos!
+Por exemplo, vamos listar alguns membros da família real britânica, anotando quem são seus pais com a relação parent(PaiOuMãe, FilhoOuFilha):</description>
+    </item>
+    
     <item>
       <title>Prol</title>
       <link>https://www.quarenta-e-dois.ml/posts/prol/</link>
@@ -14,7 +24,7 @@
       
       <guid>https://www.quarenta-e-dois.ml/posts/prol/</guid>
       <description>Prol Paradigmas de programação As principais linguagens de programação em uso atualmente -- C++, Java, PHP, JavaScript, etc. -- seguem um paradigma procedural, com toques de orientação a objetos. Isso significa que o programador descreve os procedimentos que o computador deve executar para realizar uma tarefa. Para inverter uma lista, escrevemos que o computador deve executar n/2 vezes a troca de elementos entre o começo e o fim:
-for (i = 0; i &amp;lt; n/2; i++) { let tmp = list[i]; list[i] = list[n-i-1]; list[n-i-1] = tmp; }  Isso é relativamente próximo da linguagem procedural mais básica, o assembly utilizado para programar o processador.</description>
+for (i = 0; i &amp;lt; n/2; i++) { let tmp = list[i]; list[i] = list[n-i-1]; list[n-i-1] = tmp; } Isso é relativamente próximo da linguagem procedural mais básica, o assembly utilizado para programar o processador.</description>
     </item>
     
     <item>

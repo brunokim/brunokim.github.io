@@ -1,0 +1,10 @@
+
+code {
+    font-size: 0.75em;
+    background-color: lightgoldenrodyellow;
+}
+
+pre code {
+    font-size: initial;
+    background-color: initial;
+}

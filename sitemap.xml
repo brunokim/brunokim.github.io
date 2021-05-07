@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://www.quarenta-e-dois.ml/</loc>
-    <lastmod>2021-01-04T16:37:20-03:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-05-06T17:07:29-03:00</lastmod>
+  </url><url>
+    <loc>https://www.quarenta-e-dois.ml/posts/dif/</loc>
+    <lastmod>2021-05-06T17:07:29-03:00</lastmod>
+  </url><url>
     <loc>https://www.quarenta-e-dois.ml/posts/</loc>
-    <lastmod>2021-01-04T16:37:20-03:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-05-06T17:07:29-03:00</lastmod>
+  </url><url>
     <loc>https://www.quarenta-e-dois.ml/posts/prol/</loc>
     <lastmod>2021-01-04T16:37:20-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://www.quarenta-e-dois.ml/posts/sobre/</loc>
     <lastmod>2021-01-04T15:35:44-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://www.quarenta-e-dois.ml/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://www.quarenta-e-dois.ml/tags/</loc>
   </url>
-  
 </urlset>
