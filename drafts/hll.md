@@ -1,6 +1,8 @@
 lang: pt-BR
 ---
 
+# O problema de "count distinct"
+
 Você é a pessoa de dados de uma empresa com
 um site bem popular. A cada vez que alguém
 acessa uma página do site, um registro é
@@ -18,6 +20,9 @@ cliente: 1276901
 data_de_registro: 2022-08-17
 faixa_etária: '25-34 anos'
 ```
+
+## MAU
+
 Sendo a pessoa de dados, uma das primeiras
 tarefas que te pedem é:
 
@@ -72,8 +77,80 @@ Esses valores são bem pequenos sabendo
 que smartphones baratos tem 32 GB de
 memória, quase 4000x mais.
 
+## DAU
+
 Logo que você entrega o resultado da
 consulta, uma nova requisição chega:
 
-> **Além de MAU, quantos clientes ativos diários (DAU, _daily active users_) nós tivemos em cada um dos últimos 30 dias?**
+> **Quantos clientes ativos diários (DAU, _daily active users_) nós tivemos em cada um dos últimos 30 dias?**
 
+Esta é uma consulta que podemos fazer usando GROUP BY em SQL:
+
+```sql
+SELECT
+  date(hora_de_acesso) AS data,
+  COUNT(DISTINCT cliente) AS dau
+FROM site_logs
+WHERE date_diff('day',
+    hora_de_acesso,
+    CURRENT_TIMESTAMP) <= 30;
+GROUP BY date(hora_de_acesso)
+```
+
+Quanta memória essa consulta usa? Para
+cada dia, é necessário criar um conjunto
+distinto para armazenar os clientes,
+então temos na média 30·DAU elementos
+para armazenar.
+
+Pela definição dessas métricas, DAU 
+sempre será menor ou igual a MAU:
+um cliente ativo em um dia sempre será
+ativo no mês, mas não necessariamente
+um cliente ativo em um mês será ativo
+em um dia específico dele.
+O sonho de todo produto digital é ser
+tão útil e necessário que DAU ≈ MAU,
+como o WhatsApp, que é usado diariamente
+por bilhões de pessoas.
+Na prática, cada produto tem uma certa
+frequência de uso pelos seus clientes,
+então vamos supor que DAU = 20% do MAU
+na nossa empresa.
+Isso quer dizer que, na média,
+um cliente entra a cada 5 dias no site.
+
+Para as nossas consultas, isso quer dizer
+que calcular o DAU para um mês vai consumir 30·20% = 6x mais de memória
+do que calcular o MAU. A nossa margem
+de comparação com um smartphone diminuiu
+de ~4000x para ~600x.
+
+## Dimensões
+
+Os nossos logs são razoavelmente ricos,
+e o time de negócios gostaria de ainda
+mais informações comparativas a partir
+deles:
+
+> **O MAU é diferente entre faixas etárias?**
+
+> **O DAU muda entre os dias da semana para as páginas "/home.html" e "/app.html"?**
+
+> **Como é a distribuição de MAU pelo estado do Brasil de onde a pessoa está acessando?**
+
+Cada uma dessas perguntas vira uma
+consulta diferente:
+
+```sql
+SELECT
+  b.estado,
+  COUNT(DISTINCT a.cliente) AS mau_por_estado
+FROM site_logs AS a
+LEFT JOIN geoloc_ip AS b
+  ON a.ip_de_origem = b.ip
+     AND date(a.hora_de_acesso) = b.data
+WHERE date_diff('day',
+    hora_de_acesso,
+    CURRENT_TIMESTAMP) <= 30;
+```
