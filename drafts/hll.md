@@ -22,8 +22,8 @@ Sendo a pessoa de dados, uma das primeiras
 tarefas que te pedem é: **quantos clientes
 acessaram o site nos últimos 30 dias?**
 Esta é uma das métricas mais básicas de
-negócios online, chamada MAU (monthly active
-users).
+negócios online, chamada MAU (_monthly active
+users_, clientes ativos mensais).
 
 Isto é simples de se fazer se a base suporta
 fazer consultas com SQL:
@@ -39,7 +39,7 @@ WHERE date_diff('day',
 Mas como essa consulta funciona por baixo?
 Vamos tentar implementar o mesmo em Python
 para ter uma ideia. Para contar os elementos
-sem repetiçáo, precisamos usar um conjunto.
+sem repetiçáo, usamos um `set` para conter todos os elementos únicos.
 
 ```python
 from datetime import datetime, timedelta
@@ -53,3 +53,18 @@ def monthly_active_users(logs):
   return len(unique)
 ```
 
+Quanto de memória essa consulta usa?
+Uma estrutura de dados do tipo
+`set` precisa armazenar todos os elementos
+observados; algumas implementações mais
+rápidas podem precisar de ainda mais
+memória por elemento.
+Se cada número de cliente tem 8 bytes,
+a consulta precisaria de 8 KB se a
+empresa tivesse 1000 clientes ativos
+mensais,
+e 8 MB se tivesse 1 milhão de clientes
+ativos mensais.
+Esses valores são bem pequenos sabendo
+que smartphones baratos tem 32 GB de
+memória, quase 4000x mais.
