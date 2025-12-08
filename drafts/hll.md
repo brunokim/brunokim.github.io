@@ -19,8 +19,11 @@ data_de_registro: 2022-08-17
 faixa_etária: '25-34 anos'
 ```
 Sendo a pessoa de dados, uma das primeiras
-tarefas que te pedem é: **quantos clientes
+tarefas que te pedem é:
+
+> **Quantos clientes
 acessaram o site nos últimos 30 dias?**
+
 Esta é uma das métricas mais básicas de
 negócios online, chamada MAU (_monthly active
 users_, clientes ativos mensais).
@@ -68,3 +71,9 @@ ativos mensais.
 Esses valores são bem pequenos sabendo
 que smartphones baratos tem 32 GB de
 memória, quase 4000x mais.
+
+Logo que você entrega o resultado da
+consulta, uma nova requisição chega:
+
+> **Além de MAU, quantos clientes ativos diários (DAU, _daily active users_) nós tivemos em cada um dos últimos 30 dias?**
+
