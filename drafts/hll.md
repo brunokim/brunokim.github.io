@@ -93,8 +93,8 @@ SELECT
 FROM site_logs
 WHERE date_diff('day',
     hora_de_acesso,
-    CURRENT_TIMESTAMP) <= 30;
-GROUP BY date(hora_de_acesso)
+    CURRENT_TIMESTAMP) <= 30
+GROUP BY date(hora_de_acesso);
 ```
 
 Quanta memória essa consulta usa? Para
@@ -144,6 +144,29 @@ consulta diferente:
 
 ```sql
 SELECT
+  faixa_etária,
+  COUNT(DISTINCT a.cliente) AS mau_por_faixa_etária
+FROM site_logs
+WHERE date_diff('day',
+    hora_de_acesso,
+    CURRENT_TIMESTAMP) <= 30;
+
+SELECT
+  date(hora_de_acesso) AS data,
+  day_of_week(hora_de_acesso) AS dia_da_semana,
+  página,
+  COUNT(DISTINCT cliente) AS dau_por_dia_e_página
+FROM site_logs
+WHERE página IN ('app.html', 'home.html')
+  AND date_diff('day',
+    hora_de_acesso,
+    CURRENT_TIMESTAMP) <= 30
+GROUP BY
+  date(hora_de_acesso),
+  day_of_week(hora_de_acesso),
+  página;
+
+SELECT
   b.estado,
   COUNT(DISTINCT a.cliente) AS mau_por_estado
 FROM site_logs AS a
@@ -152,5 +175,44 @@ LEFT JOIN geoloc_ip AS b
      AND date(a.hora_de_acesso) = b.data
 WHERE date_diff('day',
     hora_de_acesso,
-    CURRENT_TIMESTAMP) <= 30;
+    CURRENT_TIMESTAMP) <= 30
+GROUP BY b.estado;
 ```
+
+Para cada arquivo de dados requisitado,
+os analistas carregam no Excel, fazem
+gráficos, e voltam com novas perguntas.
+Isso nunca vai acabar, você vai ficar
+o tempo inteiro só fazendo consultas!
+
+Felizmente, a indústria já está muito
+madura e sabe como entregar as chaves
+para os dados na mão dos analistas:
+ferramentas de dashboards.
+As pessoas de dados precisam apenas
+preparar o dataset com **métricas e
+dimensões**, e os analistas selecionam
+aquelas que os interessam a cada nova
+análise.
+
+Perceba que todas as consultas seguem um
+padrão:
+
+```sql
+SELECT
+  dimensão_1,
+  dimensão_2,
+  COUNT(DISTINCT cliente) AS métrica
+FROM site_logs
+WHERE filtro
+GROUP BY
+  dimensão_1,
+  dimensão_2;
+```
+
+**Dimensão** é uma característica que
+pode ser de interesse como uma variável
+explicativa de um fenômeno.
+Quando observamos que pessoas mais
+velhas usam o produto
+que as mais novas, 
