@@ -211,8 +211,127 @@ GROUP BY
 ```
 
 **Dimensão** é uma característica que
-pode ser de interesse como uma variável
+pode ser uma variável
 explicativa de um fenômeno.
-Quando observamos que pessoas mais
-velhas usam o produto
-que as mais novas, 
+Se o fenômeno é "frequência de acesso"
+e analisamos pela variável "faixa etária",
+podemos descobrir uma relação
+entre idade e interesse pelo que temos
+a ofertar.
+Esse tipo de relação não quer dizer que
+uma coisa _causa_ a outra, mas só a
+existência de uma _correlação_ já pode
+direcionar o time de produto a realizar
+propagandas focando em uma ou outra
+faixa etária.
+
+As **métricas** são as variáveis de
+efeito de um fenômeno.
+São elas que desejamos controlar
+indiretamente ao alterar as variáveis
+explicativas.
+Continuando o exemplo anterior, se
+comprarmos propagandas direcionadas
+para um público que acreditamos ser mais
+ativo, esperamos mensurar um aumento
+na métrica como consequência dessa ação.
+
+A tarefa de criar dimensões para
+análise é contínua, mas após você
+configurar algumas no dashboard, os
+analistas estão muito mais felizes e
+autônomos, e param de te pedir coisas,
+certo? Certo?
+
+## Pré-agregação
+
+Não demora muito para o encanto inicial
+com o dashboard dar lugar a novas
+demandas. A mais presente é simples e
+lacônica:
+
+> **O dashboard é muito lento**
+
+Você testa o dashboard e ele não te
+parece mais lento do que fazer a
+consulta, mas acompanhando um analista
+você percebe que o problema está nas
+expectativas de cada um.
+No Excel, eles podem configurar e
+reconfigurar um gráfico várias vezes por
+minuto até chegar no formato que desejam,
+mas no seu dashboard, cada interação
+exige uma nova consulta de vários segundos
+sobre milhões de logs.
+
+Você até aconselha os analistas para 
+analisarem menos dados por vez,
+limitando a janela de tempo de interesse,
+mas você sente que precisa existir um
+jeito melhor.
+
+Nas suas pesquisas, você encontra
+relatos sobre montar um **cubo de
+dados**, onde cada métrica é pré-calculada
+para todas as combinações de dimensões, 
+e análises exigem apenas combinar as
+métricas das dimensões de interesse no
+momento.
+
+Por exemplo, para as dimensões da seção
+anterior, poderíamos montar o seguinte
+cubo para a métrica "contagem de registros":
+
+```sql
+CREATE TABLE logs_cubo AS
+SELECT
+  date(a.hora_de_acesso) AS data,
+  day_of_week(a.hora_de_acesso) AS dia_da_semana,
+  a.faixa_etária,
+  a.página,
+  b.estado
+  COUNT(*) AS num_registros
+FROM site_logs AS a
+LEFT JOIN geoloc_ip AS b
+  ON a.ip_de_origem = b.ip
+     AND date(a.hora_de_acesso) = b.data
+GROUP BY 1, 2, 3, 4, 5
+```
+
+Esta pré-agregação já simplifica e 
+reduz o número de linhas a serem
+consultadas pelo dashboard.
+Agora, para obter aquelas mesmas
+métricas podemos apenas ajustar os
+filtros e combinar a métrica com SUM:
+
+```sql
+SELECT
+  faixa_etária,
+  SUM(num_registros) AS num_registros
+FROM logs_cubo
+WHERE data > CURRENT_DATE - INTERVAL '30' DAY
+GROUP BY faixa_etária;
+```
+
+Outro benefício dessa pré-agregação é
+que ela é **incremental**. Uma vez que
+calculamos a agregação para uma data,
+não precisamos calcular de novo.
+Podemos, então, a cada dia, calcular e
+inserir em `logs_cubo` apenas as
+agregações deste período.
+Só seria necessário recalcular todo o
+histórico ao adicionar ou modificar
+uma dimensão ou métrica.
+
+Mas resta um grande problema: como
+podemos fazer o mesmo para `COUNT(DISTINCT cliente)`?
+O mesmo cliente pode estar presente em
+mais de um conjunto de dimensões (e.g.,
+dias diferentes, estados diferentes...),
+então ao somar as contagens únicas
+isoladamente, podemos estar contando
+um elemento mais de uma vez.
+
+## Conjuntos exatos
