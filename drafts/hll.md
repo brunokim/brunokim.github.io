@@ -335,3 +335,36 @@ isoladamente, podemos estar contando
 um elemento mais de uma vez.
 
 ## Conjuntos exatos
+
+Vamos voltar ao Python...
+
+```py
+def métrica_zero():
+  return {
+    "num_registros": 0,
+    "clientes_únicos": set(),
+  }
+
+cubo = {}
+
+for log in logs:
+  # Calcula as dimensões associadas a
+  # esse registro de log.
+  dims = (
+    calc_data(log.hora_de_acesso),
+    calc_dia_da_semana(log.hora_de_acesso),
+    log.faixa_etária,
+    log.página,
+    geoloc_ip(log.ip_de_origem).estado,
+  )
+
+  # Inicializa as métricas da dimensão,
+  # se não existirem ainda.
+  if dims not in cubo:
+    cubo[dims] = métrica_zero()
+
+  # Incrementa as métricas associadas a
+  # essa combinação de dimensões
+  cubo[dims]["num_registros"] += 1
+  cubo[dims]["clientes_únicos"].add(log.cliente)
+```
