@@ -368,3 +368,25 @@ for log in logs:
   cubo[dims]["num_registros"] += 1
   cubo[dims]["clientes_únicos"].add(log.cliente)
 ```
+
+Agora estamos armazenando o conjunto
+completo de clientes para cada combinação
+de dimensões. Se quisermos saber os
+clientes que acessaram a página "app.html"
+às 20:00 do dia 5 de Outubro de 2024, 
+com faixa etária de 25-34 anos, 
+acessando de Pernambuco, podemos obter
+com
+
+```py
+dims = (
+  date.fromisoformat("2024-10-05"),
+  time.fromisoformat("20:00:00"),
+  "25-34",
+  "app.html",
+  "PE",
+)
+
+print(cubo[dims]["clientes_únicos"])
+```
+
